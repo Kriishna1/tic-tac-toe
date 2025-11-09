@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: example_pwd
+      POSTGRES_USER: nakama
+      POSTGRES_DB: nakama
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "nakama"]
+      interval: 5s
+      retries: 10
+
+  nakama:
+    image: heroiclabs/nakama:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - "database.address=postgres:5432"
+      - "socket.ssl_certificate_path="
+      - "socket.ssl_private_key_path="
+      - "logger.level=DEBUG"
+    ports:
+      - "7350:7350" # HTTP/API
+      - "7351:7351" # Console/gRPC
+      - "7352:7352" # Optional runtime port
+    volumes:
+      - ./nakama/runtime:/nakama/data/modules
+      - ./nakama/config:/nakama/data
+volumes:
+  postgres_data:
