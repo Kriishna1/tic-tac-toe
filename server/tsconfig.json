@@ -1,0 +1,17 @@
+{
+  "files": [
+    "./main.ts",
+  ],
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es2015"],
+    "typeRoots": [
+      "./node_modules"
+    ],
+    "outFile": "./build/index.js",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
