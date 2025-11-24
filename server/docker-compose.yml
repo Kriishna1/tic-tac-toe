@@ -18,15 +18,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    environment:
-      - "database.address=postgres:5432"
-      - "socket.ssl_certificate_path="
-      - "socket.ssl_private_key_path="
-      - "logger.level=DEBUG"
+    entrypoint: >
+      /bin/sh -ecx "
+      /nakama/nakama migrate up --database.address nakama:example_pwd@postgres:5432/nakama?sslmode=disable &&
+      exec /nakama/nakama --database.address nakama:example_pwd@postgres:5432/nakama?sslmode=disable --logger.level DEBUG --runtime.js_entrypoint tic_tac_toe_rpc.js
+      "
     ports:
       - "7350:7350" # HTTP/API
       - "7351:7351" # Console/gRPC
-      - "7352:7352" # Optional runtime port
+      - "7349:7349" # Console HTTP
     volumes:
       - ./nakama/runtime:/nakama/data/modules
       - ./nakama/config:/nakama/data
